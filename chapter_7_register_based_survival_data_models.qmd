@@ -1,0 +1,37 @@
+---
+title: "Chapter 7 Register-Based Survival Data Models"
+format: 
+    html:
+        number-sections: true
+---
+## Tabular Data
+
+You can regard this as aggregated data.
+
+```{r sw}
+library(eha)
+library(tidyverse)
+
+sw <- cbind(swepop %>% select(-id), swedeaths$deaths)
+colnames(sw) <- c("age", "sex", "year", "pop", "deaths")
+head(sw)
+```
+
+```{r fit_model}
+system.time(
+    fit <- tpchreg(oe(deaths, pop) ~ sex + I(year-1995), time = age, last=101, data = sw)
+)
+```
+
+## Individual Data
+
+piecewise constant proportional hazards (pch) models
+
+`toTpch`
+
+## Communal Covariates and Tabulation
+
+### Temparature and mortality, Umea 1901-1950
+
+So for this part, I don't have the data.
+

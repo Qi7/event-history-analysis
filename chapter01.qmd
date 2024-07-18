@@ -1,0 +1,22 @@
+---
+title: "chapter01"
+format: html
+---
+
+```{r}
+library(eha)
+```
+
+```{r}
+head(oldmort, 3)
+```
+
+
+You can add options to executable code like this 
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
