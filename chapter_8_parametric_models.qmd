@@ -1,0 +1,117 @@
+---
+title: "Chapter 8 Parametric Models"
+format: 
+    html:
+        number-sections: true
+---
+
+## Proportional Hazard Models
+
+$$h_1(t) = ch_0(t) \text{ for some c > 0 , and all t > 0}$$
+
+In `eha`, available distributions in `phref` include:
+
+- _Weibull_
+- _Extreme value_
+- _Gompertz_
+
+in `pch` and `tpch`:
+
+- _piecewise constant hazards_
+
+### the Weibull model
+
+$$h(t; p, \lambda) = \frac p\lambda(\frac t \lambda)^{p-1},  \text{ t, p, }\lambda \gt 0$$
+
+$$h(t;x,\lambda, p, \beta) = \frac p\lambda(\frac t \lambda)^{p-1} \exp(\beta x),  t \gt 0$$
+
+This is the function `phreg` fits by default.
+
+### the Gompertz distribution
+
+$$ h(t;p, r) = p\exp(rt), p,t \gt 0; -\infty \lt r \lt \infty$$
+
+and the proportional hazard model is
+
+$$h(t;x, p, r, \beta) = pe^{rt}e^{\beta x}, t \gt 0$$
+
+### Application
+
+```{r}
+library(eha)
+data("oldmort")
+olm <- oldmort
+head(olm)
+```
+
+fit the weibull model
+```{r phreg_weibull}
+fit <- phreg(Surv(enter - 60, exit - 60, event) ~ sex + region, dist = "weibull"
+    , data = oldmort)
+summary(fit)
+```
+
+### the parametric model with left truncation
+
+### the piecewise constant proportional hazards model
+
+`pch` the piecewise constant proportional hazard model
+
+```{r}
+# totpch
+olmtab <- toTpch(Surv(enter, exit, event) ~ sex + region, 
+    cuts = c(seq(60, 85, by=5), 100), data = oldmort)
+head(olmtab)
+```
+
+```{r}
+fit.tpch <- tpchreg(oe(event, exposure) ~ sex + region, data = olmtab
+    , time = age)
+summary(fit.tpch)
+```
+
+### testing the proportional hazards assumption
+
+```{r}
+fit.tpch <- tpchreg(oe(event, exposure) ~ age*(sex + region), data = olmtab)
+(dr <- drop1(fit.tpch, test = "Chisq"))
+```
+
+```{r}
+fit.str <- tpchreg(oe(event, exposure) ~ sex + strata(region), time = age 
+    , data = olmtab)
+fit.str
+```
+
+using another dataset
+
+```{r}
+sp <- swepop
+sp$deaths <- swedeaths$deaths
+head(sp)
+```
+
+```{r}
+fit.swr <- tpchreg(oe(deaths, pop) ~ strata(sex) + I(year - 2000), last = 101
+    , time = age, data = sp)
+
+rr.sex <- exp(tpchreg(oe(deaths, pop) ~ sex + I(year - 2000)
+    , last = 101
+    , time = age
+    , data = sp)$coefficients[1])
+
+cumhaz <- hazards(fit.swr, cum = TRUE)
+haz <- hazards(fit.swr, cum = FALSE)
+```
+
+```{r}
+op <- par(mfrow = c(1, 2))
+plot(haz$x, haz$y[2,]/haz$y[1,], type = "l", ylim=c(1, 3), xlab = "Age", ylab = "Hazard Ratio")
+abline(h=1)
+abline(h=rr.sex, lty=2)
+text(5, 1.65, "PH")
+plot(cumhaz$x, cumhaz$y[2,]/cumhaz$y[1,], type = "l", ylim=c(1, 3), xlab = "Age", ylab = "Cumulative Hazard Ratio")
+abline(h=1)
+abline(h=rr.sex, lty=2)
+text(5, 1.65, "PH")
+```
