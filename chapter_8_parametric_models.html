@@ -337,6 +337,178 @@ Overall p-value           0.0001481</code></pre>
 </div>
 </div>
 </section>
+<section id="choosing-the-best-parametric-proportional-hazards-model" class="level3" data-number="1.7">
+<h3 data-number="1.7" class="anchored" data-anchor-id="choosing-the-best-parametric-proportional-hazards-model"><span class="header-section-number">1.7</span> Choosing the best parametric proportional hazards model</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(eha)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>om <span class="ot">&lt;-</span> oldmort</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>fm <span class="ot">&lt;-</span> <span class="fu">as.formula</span>(<span class="st">"Surv(enter, exit, event) ~ sex + region"</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>fm0 <span class="ot">&lt;-</span> <span class="fu">as.formula</span>(<span class="st">"Surv(enter-60, exit-60, event) ~ sex + region"</span>)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>fit.w <span class="ot">&lt;-</span> <span class="fu">phreg</span>(fm, <span class="at">data=</span>oldmort)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>o.w <span class="ot">&lt;-</span> <span class="fu">extractAIC</span>(fit.w)[<span class="dv">2</span>]</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>fit.w0 <span class="ot">&lt;-</span> <span class="fu">phreg</span>(fm0, <span class="at">data=</span>oldmort)</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>o.w0 <span class="ot">&lt;-</span> <span class="fu">extractAIC</span>(fit.w0)[<span class="dv">2</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="accelerated-failure-time-models" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="accelerated-failure-time-models"><span class="header-section-number">2</span> Accelerated Failure Time Models</h2>
+<ul>
+<li>Group 0 : <span class="math inline">\(P(T \geq t) = S_0(t)\)</span> (control group)</li>
+<li>Group 1 : <span class="math inline">\(P(T \geq t) = S_0(\phi t)\)</span> (treatment group)</li>
+</ul>
+<section id="the-aft-regression-model" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="the-aft-regression-model"><span class="header-section-number">2.1</span> The AFT regression model</h3>
+<ul>
+<li><span class="math inline">\(T\)</span> has survivor function <span class="math inline">\(S(t)\)</span></li>
+<li><span class="math inline">\(T_c = \frac T c\)</span> has survivor function <span class="math inline">\(S(ct)\)</span></li>
+<li>if <span class="math inline">\(Y=\log(T)\)</span> and <span class="math inline">\(Y_c=\log(T_c)\)</span></li>
+</ul>
+<p>the following holds:</p>
+<p><span class="math display">\[Y_c = Y - \log(c)\]</span></p>
+<p>with <span class="math inline">\(Y=\epsilon\)</span>, <span class="math inline">\(Y_c=Y\)</span> and <span class="math inline">\(\log(c) = -\beta x\)</span> then <span class="math display">\[Y=\beta x + \epsilon\]</span></p>
+</section>
+<section id="aft-modeling-in-r" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="aft-modeling-in-r"><span class="header-section-number">2.2</span> AFT modeling in R</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>fit.w1 <span class="ot">&lt;-</span> <span class="fu">aftreg</span>(fm0, <span class="at">id=</span>id, <span class="at">data=</span>oldmort)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="the-lognormal-model" class="level3" data-number="2.3">
+<h3 data-number="2.3" class="anchored" data-anchor-id="the-lognormal-model"><span class="header-section-number">2.3</span> The Lognormal model</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(eha)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.1
+✔ ggplot2   3.5.1     ✔ tibble    3.2.1
+✔ lubridate 1.9.3     ✔ tidyr     1.3.1
+✔ purrr     1.0.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>f12 <span class="ot">&lt;-</span> fert <span class="sc">%&gt;%</span> <span class="fu">filter</span>(parity<span class="sc">==</span><span class="dv">1</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(f12)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  id parity age year next.ivl event prev.ivl     ses parish
+1  1      1  25 1826   22.348     0    0.411  farmer    SKL
+2  2      1  19 1821    1.837     1    0.304 unknown    SKL
+3  3      1  24 1827    2.051     1    0.772  farmer    SKL
+4  4      1  35 1838    1.782     0    6.787 unknown    SKL
+5  5      1  28 1832    1.629     1    3.031  farmer    SKL
+6  6      1  25 1829    1.730     1    0.819   lower    SKL</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>fit.lognorm <span class="ot">&lt;-</span> <span class="fu">aftreg</span>(<span class="fu">Surv</span>(next.ivl, event) <span class="sc">~</span> age <span class="sc">+</span> <span class="fu">I</span>(year <span class="sc">-</span> <span class="dv">1860</span>) <span class="sc">+</span> ses, </span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">data=</span>f12, <span class="at">dist =</span> <span class="st">'lognormal'</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit.lognorm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Covariate            W.mean      Coef Time-Accn  se(Coef)    LR p
+age                  27.151    -0.019     0.981     0.003   0.0000 
+I(year - 1860)       -1.336     0.000     1.000     0.001   0.7796 
+ses                                                         0.0932 
+          farmer      0.449     0         1   (reference)
+         unknown      0.190    -0.083     0.920     0.037
+           upper      0.024     0.019     1.019     0.091
+           lower      0.336    -0.051     0.950     0.030
+
+Events                    1657 
+Total time at risk        4500.5 
+Max. log. likelihood      -2619.6 
+LR test statistic         51.51 
+Degrees of freedom        5 
+Overall p-value           6.79439e-10</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>fit.lognorm2 <span class="ot">&lt;-</span> <span class="fu">aftreg</span>(<span class="fu">Surv</span>(next.ivl, event) <span class="sc">~</span> age <span class="sc">+</span> <span class="fu">I</span>(year <span class="sc">-</span> <span class="dv">1860</span>) <span class="sc">+</span> ses,</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">data=</span>f12, <span class="at">dist =</span> <span class="st">'lognormal'</span>, <span class="at">param =</span> <span class="st">"lifeExp"</span>)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit.lognorm2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Covariate            W.mean      Coef Life-Expn  se(Coef)    LR p
+age                  27.151     0.019     1.019     0.003   0.0000 
+I(year - 1860)       -1.336    -0.000     1.000     0.001   0.7796 
+ses                                                         0.0932 
+          farmer      0.449     0         1   (reference)
+         unknown      0.190     0.083     1.087     0.037
+           upper      0.024    -0.019     0.982     0.091
+           lower      0.336     0.051     1.053     0.030
+
+Events                    1657 
+Total time at risk        4500.5 
+Max. log. likelihood      -2619.6 
+LR test statistic         51.51 
+Degrees of freedom        5 
+Overall p-value           6.79439e-10</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit.lognorm, <span class="at">fn=</span><span class="st">'haz'</span>, <span class="at">main=</span><span class="st">''</span>, <span class="at">xlab=</span><span class="st">'Years'</span>, <span class="at">ylab=</span><span class="st">'hazards'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter_8_parametric_models_files/figure-html/hazardPlot-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="the-loglogistic-model" class="level3" data-number="2.4">
+<h3 data-number="2.4" class="anchored" data-anchor-id="the-loglogistic-model"><span class="header-section-number">2.4</span> The Loglogistic model</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>fit.loglogistic <span class="ot">&lt;-</span> <span class="fu">aftreg</span>(<span class="fu">Surv</span>(next.ivl, event) <span class="sc">~</span> age <span class="sc">+</span> <span class="fu">I</span>(year <span class="sc">-</span> <span class="dv">1860</span>) <span class="sc">+</span> ses,</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">data=</span>f12, <span class="at">dist =</span> <span class="st">'loglogistic'</span>)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit.loglogistic)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Covariate            W.mean      Coef Time-Accn  se(Coef)    LR p
+age                  27.151    -0.014     0.986     0.003   0.0000 
+I(year - 1860)       -1.336     0.000     1.000     0.001   0.8180 
+ses                                                         0.2274 
+          farmer      0.449     0         1   (reference)
+         unknown      0.190    -0.030     0.970     0.030
+           upper      0.024     0.096     1.101     0.077
+           lower      0.336    -0.033     0.967     0.024
+
+Events                    1657 
+Total time at risk        4500.5 
+Max. log. likelihood      -2408.7 
+LR test statistic         39.84 
+Degrees of freedom        5 
+Overall p-value           1.60729e-07</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit.loglogistic, <span class="at">fn=</span><span class="st">'haz'</span>, <span class="at">main=</span><span class="st">''</span>, <span class="at">xlab=</span><span class="st">'Years'</span>, <span class="at">ylab=</span><span class="st">'hazards'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter_8_parametric_models_files/figure-html/hazardPlot_loglogistic-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="the-gomperts-model" class="level3" data-number="2.5">
+<h3 data-number="2.5" class="anchored" data-anchor-id="the-gomperts-model"><span class="header-section-number">2.5</span> The Gomperts model</h3>
+<p>the canonical parameterization in the package <code>eha</code></p>
+<p>the standard definition of the Gompertz hazard function is</p>
+<p><span class="math display">\[h_r(t; (\alpha, \beta)) = \alpha \exp(\beta t), t \gt 0; \alpha \gt 0, -\infty \lt \sigma \lt \infty\]</span></p>
+<p>the canonical definition of the Gompertz hazard function is given by</p>
+<p><span class="math display">\[h_c(t;(\tau, \sigma)) = \frac \tau \sigma \exp(\frac t \sigma), t \gt 0; \tau , \sigma \gt 0\]</span></p>
+</section>
+</section>
+<section id="proportional-hazards-or-aft-model" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="proportional-hazards-or-aft-model"><span class="header-section-number">3</span> Proportional Hazards or AFT Model?</h2>
+<p>comparing the AIC of the models</p>
+</section>
+<section id="discrete-time-models" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="discrete-time-models"><span class="header-section-number">4</span> Discrete Time Models</h2>
 </section>
 
 </main>

@@ -115,3 +115,97 @@ abline(h=1)
 abline(h=rr.sex, lty=2)
 text(5, 1.65, "PH")
 ```
+
+### Choosing the best parametric proportional hazards model
+
+```{r}
+library(eha)
+om <- oldmort
+fm <- as.formula("Surv(enter, exit, event) ~ sex + region")
+fm0 <- as.formula("Surv(enter-60, exit-60, event) ~ sex + region")
+fit.w <- phreg(fm, data=oldmort)
+o.w <- extractAIC(fit.w)[2]
+
+fit.w0 <- phreg(fm0, data=oldmort)
+o.w0 <- extractAIC(fit.w0)[2]
+```
+
+## Accelerated Failure Time Models
+
+- Group 0 : $P(T \geq t) = S_0(t)$ (control group)
+- Group 1 : $P(T \geq t) = S_0(\phi t)$ (treatment group)
+
+### The AFT regression model
+
+- $T$ has survivor function $S(t)$ 
+- $T_c = \frac T c$ has survivor function $S(ct)$ 
+- if $Y=\log(T)$ and $Y_c=\log(T_c)$
+
+the following holds:
+
+$$Y_c = Y - \log(c)$$
+
+with $Y=\epsilon$, $Y_c=Y$ and $\log(c) = -\beta x$ then
+$$Y=\beta x + \epsilon$$
+
+### AFT modeling in R
+
+```{r aft}
+fit.w1 <- aftreg(fm0, id=id, data=oldmort)
+```
+
+### The Lognormal model
+```{r}
+library(eha)
+library(tidyverse)
+f12 <- fert %>% filter(parity==1)
+head(f12)
+```
+
+```{r lognormal}
+fit.lognorm <- aftreg(Surv(next.ivl, event) ~ age + I(year - 1860) + ses, 
+    data=f12, dist = 'lognormal')
+summary(fit.lognorm)
+```
+
+```{r lifeExp}
+fit.lognorm2 <- aftreg(Surv(next.ivl, event) ~ age + I(year - 1860) + ses,
+    data=f12, dist = 'lognormal', param = "lifeExp")
+summary(fit.lognorm2)
+```
+
+```{r hazardPlot}
+plot(fit.lognorm, fn='haz', main='', xlab='Years', ylab='hazards')
+```
+
+### The Loglogistic model
+
+```{r loglogistic}
+fit.loglogistic <- aftreg(Surv(next.ivl, event) ~ age + I(year - 1860) + ses,
+    data=f12, dist = 'loglogistic')
+summary(fit.loglogistic)
+```
+
+```{r hazardPlot_loglogistic}
+plot(fit.loglogistic, fn='haz', main='', xlab='Years', ylab='hazards')
+```
+
+### The Gomperts model
+
+the canonical parameterization in the package `eha`
+
+the standard definition of the Gompertz hazard function is 
+
+$$h_r(t; (\alpha, \beta)) = \alpha \exp(\beta t), t \gt 0; \alpha \gt 0, -\infty \lt \sigma \lt \infty$$
+
+the canonical definition of the Gompertz hazard function is given by 
+
+$$h_c(t;(\tau, \sigma)) = \frac \tau \sigma \exp(\frac t \sigma), t \gt 0; \tau , \sigma \gt 0$$
+
+## Proportional Hazards or AFT Model?
+
+comparing the AIC of the models
+
+## Discrete Time Models
+
+
