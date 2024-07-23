@@ -208,4 +208,93 @@ comparing the AIC of the models
 
 ## Discrete Time Models
 
+### Data Formats: wide and long
+
+```{r wideToLong}
+data(oldmort)
+
+om <- oldmort[oldmort$enter==60, ]
+om <- age.window(om, c(60, 70)) 
+
+om$m.id <- om$f.id <- om$imr.birth <- om$birthplace <- NULL
+
+om$birthdate <- om$ses.50 <- 50
+
+om1 <- survival::survSplit(om, cut = 61:69, start = 'enter', end = 'exit'
+                           , event = 'event', episode = 'agegrp')
+
+om1$agegrp <- factor(om1$agegrp, labels = 60:69)
+
+om1 <- om1[order(om1$id, om1$enter), ]
+
+rownames(om1) <- 1:NROW(om1)
+
+om1$id <- as.numeric(as.factor(om1$id))
+
+head(om1)
+```
+
+```{r}
+recs <- tapply(om1$id, om1$id, length)
+barplot(table(recs))
+```
+```{r}
+om1$exit <- om1$enter <- NULL
+om2 <- reshape(om1, v.names = c('event', 'civ', 'region')
+               , idvar = 'id', direction = 'wide'
+               , timevar = 'agegrp')
+head(om2)
+names(om2)
+```
+```{r}
+om3 <- reshape(om2, direction = 'long', idvar = 'id', varying = 5:34)
+head(om3)
+```
+```{r}
+om3 <- om3[order(om3$id, om3$time), ]
+om3[1:11, ]
+```
+
+```{r}
+om3 <- om3[!is.na(om3$event), ]
+NROW(om3)
+```
+
+```{r}
+summary(om3)
+```
+```{r}
+om3$time <- as.factor(om3$time)
+summary(om3)
+```
+### Binomial regression with glm
+
+logistic regression
+
+```{r cloglog}
+fit.glm <- glm(event ~ sex + civ + region + time 
+               , family = binomial(link=cloglog)
+               , data = om3)
+summary(fit.glm)
+```
+
+### Survival analysis with `coxreg`
+
+```{r}
+om3$exit <- as.numeric(as.character(om3$time))
+om3$enter <- om3$exit - 0.1
+
+cap = "Old age mortality, discrete time analysis"
+
+fit.ML <- coxreg(Surv(enter, exit, event) ~ sex + civ + region
+                 , method = "ml", data = om3, coxph = FALSE)
+summary(fit.ML)
+```
+```{r}
+fit2.glm <- glm(event ~ (sex + civ + region) * time
+                , family = binomial(link=cloglog)
+                , data = om3)
+drop1(fit2.glm, test = "Chisq")
+```
+
 

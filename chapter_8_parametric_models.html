@@ -509,6 +509,279 @@ Overall p-value           1.60729e-07</code></pre>
 </section>
 <section id="discrete-time-models" class="level2" data-number="4">
 <h2 data-number="4" class="anchored" data-anchor-id="discrete-time-models"><span class="header-section-number">4</span> Discrete Time Models</h2>
+<section id="data-formats-wide-and-long" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="data-formats-wide-and-long"><span class="header-section-number">4.1</span> Data Formats: wide and long</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(oldmort)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>om <span class="ot">&lt;-</span> oldmort[oldmort<span class="sc">$</span>enter<span class="sc">==</span><span class="dv">60</span>, ]</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>om <span class="ot">&lt;-</span> <span class="fu">age.window</span>(om, <span class="fu">c</span>(<span class="dv">60</span>, <span class="dv">70</span>)) </span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>om<span class="sc">$</span>m.id <span class="ot">&lt;-</span> om<span class="sc">$</span>f.id <span class="ot">&lt;-</span> om<span class="sc">$</span>imr.birth <span class="ot">&lt;-</span> om<span class="sc">$</span>birthplace <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>om<span class="sc">$</span>birthdate <span class="ot">&lt;-</span> om<span class="sc">$</span>ses<span class="fl">.50</span> <span class="ot">&lt;-</span> <span class="dv">50</span></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>om1 <span class="ot">&lt;-</span> survival<span class="sc">::</span><span class="fu">survSplit</span>(om, <span class="at">cut =</span> <span class="dv">61</span><span class="sc">:</span><span class="dv">69</span>, <span class="at">start =</span> <span class="st">'enter'</span>, <span class="at">end =</span> <span class="st">'exit'</span></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>                           , <span class="at">event =</span> <span class="st">'event'</span>, <span class="at">episode =</span> <span class="st">'agegrp'</span>)</span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a>om1<span class="sc">$</span>agegrp <span class="ot">&lt;-</span> <span class="fu">factor</span>(om1<span class="sc">$</span>agegrp, <span class="at">labels =</span> <span class="dv">60</span><span class="sc">:</span><span class="dv">69</span>)</span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a>om1 <span class="ot">&lt;-</span> om1[<span class="fu">order</span>(om1<span class="sc">$</span>id, om1<span class="sc">$</span>enter), ]</span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(om1) <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">NROW</span>(om1)</span>
+<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a>om1<span class="sc">$</span>id <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">as.factor</span>(om1<span class="sc">$</span>id))</span>
+<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-21"><a href="#cb34-21" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(om1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  id birthdate    sex   civ ses.50   region enter   exit event agegrp
+1  1        50   male widow     50    rural    60 61.000     0     60
+2  1        50   male widow     50    rural    61 62.000     0     61
+3  1        50   male widow     50    rural    62 63.000     0     62
+4  1        50   male widow     50    rural    63 63.413     0     63
+5  2        50 female widow     50 industry    60 61.000     0     60
+6  2        50 female widow     50 industry    61 62.000     0     61</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>recs <span class="ot">&lt;-</span> <span class="fu">tapply</span>(om1<span class="sc">$</span>id, om1<span class="sc">$</span>id, length)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>(<span class="fu">table</span>(recs))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter_8_parametric_models_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>om1<span class="sc">$</span>exit <span class="ot">&lt;-</span> om1<span class="sc">$</span>enter <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>om2 <span class="ot">&lt;-</span> <span class="fu">reshape</span>(om1, <span class="at">v.names =</span> <span class="fu">c</span>(<span class="st">'event'</span>, <span class="st">'civ'</span>, <span class="st">'region'</span>)</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>               , <span class="at">idvar =</span> <span class="st">'id'</span>, <span class="at">direction =</span> <span class="st">'wide'</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>               , <span class="at">timevar =</span> <span class="st">'agegrp'</span>)</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(om2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   id birthdate    sex ses.50 event.60  civ.60 region.60 event.61  civ.61
+1   1        50   male     50        0   widow     rural        0   widow
+5   2        50 female     50        0   widow  industry        0   widow
+15  3        50   male     50        0 married      town        0 married
+22  4        50   male     50        0 married      town        0 married
+32  5        50 female     50        0 married      town        0 married
+42  6        50 female     50        0 married      town        0 married
+   region.61 event.62  civ.62 region.62 event.63  civ.63 region.63 event.64
+1      rural        0   widow     rural        0   widow     rural       NA
+5   industry        0   widow  industry        0   widow  industry        0
+15      town        0 married      town        0 married      town        0
+22      town        0 married      town        0 married      town        0
+32      town        0 married      town        0 married      town        0
+42      town        0 married      town        0 married      town        0
+    civ.64 region.64 event.65  civ.65 region.65 event.66  civ.66 region.66
+1     &lt;NA&gt;      &lt;NA&gt;       NA    &lt;NA&gt;      &lt;NA&gt;       NA    &lt;NA&gt;      &lt;NA&gt;
+5    widow  industry        0   widow  industry        0   widow  industry
+15 married      town        0 married      town        0 married      town
+22 married      town        0 married      town        0 married      town
+32 married      town        0 married      town        0 married      town
+42 married      town        0 married      town        0 married      town
+   event.67  civ.67 region.67 event.68  civ.68 region.68 event.69  civ.69
+1        NA    &lt;NA&gt;      &lt;NA&gt;       NA    &lt;NA&gt;      &lt;NA&gt;       NA    &lt;NA&gt;
+5         0   widow  industry        0   widow  industry        0   widow
+15       NA    &lt;NA&gt;      &lt;NA&gt;       NA    &lt;NA&gt;      &lt;NA&gt;       NA    &lt;NA&gt;
+22        0 married      town        0 married      town        0 married
+32        0 married      town        0 married      town        1 married
+42        0 married      town        0 married      town        0 married
+   region.69
+1       &lt;NA&gt;
+5   industry
+15      &lt;NA&gt;
+22      town
+32      town
+42      town</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(om2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "id"        "birthdate" "sex"       "ses.50"    "event.60"  "civ.60"   
+ [7] "region.60" "event.61"  "civ.61"    "region.61" "event.62"  "civ.62"   
+[13] "region.62" "event.63"  "civ.63"    "region.63" "event.64"  "civ.64"   
+[19] "region.64" "event.65"  "civ.65"    "region.65" "event.66"  "civ.66"   
+[25] "region.66" "event.67"  "civ.67"    "region.67" "event.68"  "civ.68"   
+[31] "region.68" "event.69"  "civ.69"    "region.69"</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>om3 <span class="ot">&lt;-</span> <span class="fu">reshape</span>(om2, <span class="at">direction =</span> <span class="st">'long'</span>, <span class="at">idvar =</span> <span class="st">'id'</span>, <span class="at">varying =</span> <span class="dv">5</span><span class="sc">:</span><span class="dv">34</span>)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(om3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     id birthdate    sex ses.50 time event     civ   region
+1.60  1        50   male     50   60     0   widow    rural
+2.60  2        50 female     50   60     0   widow industry
+3.60  3        50   male     50   60     0 married     town
+4.60  4        50   male     50   60     0 married     town
+5.60  5        50 female     50   60     0 married     town
+6.60  6        50 female     50   60     0 married     town</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>om3 <span class="ot">&lt;-</span> om3[<span class="fu">order</span>(om3<span class="sc">$</span>id, om3<span class="sc">$</span>time), ]</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>om3[<span class="dv">1</span><span class="sc">:</span><span class="dv">11</span>, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     id birthdate    sex ses.50 time event   civ   region
+1.60  1        50   male     50   60     0 widow    rural
+1.61  1        50   male     50   61     0 widow    rural
+1.62  1        50   male     50   62     0 widow    rural
+1.63  1        50   male     50   63     0 widow    rural
+1.64  1        50   male     50   64    NA  &lt;NA&gt;     &lt;NA&gt;
+1.65  1        50   male     50   65    NA  &lt;NA&gt;     &lt;NA&gt;
+1.66  1        50   male     50   66    NA  &lt;NA&gt;     &lt;NA&gt;
+1.67  1        50   male     50   67    NA  &lt;NA&gt;     &lt;NA&gt;
+1.68  1        50   male     50   68    NA  &lt;NA&gt;     &lt;NA&gt;
+1.69  1        50   male     50   69    NA  &lt;NA&gt;     &lt;NA&gt;
+2.60  2        50 female     50   60     0 widow industry</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>om3 <span class="ot">&lt;-</span> om3[<span class="sc">!</span><span class="fu">is.na</span>(om3<span class="sc">$</span>event), ]</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="fu">NROW</span>(om3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 17434</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(om3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       id         birthdate      sex            ses.50        time      
+ Min.   :   1   Min.   :50   male  : 7045   Min.   :50   Min.   :60.00  
+ 1st Qu.: 655   1st Qu.:50   female:10389   1st Qu.:50   1st Qu.:61.00  
+ Median :1267   Median :50                  Median :50   Median :63.00  
+ Mean   :1328   Mean   :50                  Mean   :50   Mean   :63.15  
+ 3rd Qu.:1948   3rd Qu.:50                  3rd Qu.:50   3rd Qu.:65.00  
+ Max.   :3223   Max.   :50                  Max.   :50   Max.   :69.00  
+     event                civ             region    
+ Min.   :0.00000   unmarried: 1565   town    :2485  
+ 1st Qu.:0.00000   married  :11380   industry:5344  
+ Median :0.00000   widow    : 4489   rural   :9605  
+ Mean   :0.02587                                    
+ 3rd Qu.:0.00000                                    
+ Max.   :1.00000                                    </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>om3<span class="sc">$</span>time <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(om3<span class="sc">$</span>time)</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(om3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       id         birthdate      sex            ses.50        time     
+ Min.   :   1   Min.   :50   male  : 7045   Min.   :50   60     :3223  
+ 1st Qu.: 655   1st Qu.:50   female:10389   1st Qu.:50   61     :2823  
+ Median :1267   Median :50                  Median :50   62     :2426  
+ Mean   :1328   Mean   :50                  Mean   :50   63     :2075  
+ 3rd Qu.:1948   3rd Qu.:50                  3rd Qu.:50   64     :1760  
+ Max.   :3223   Max.   :50                  Max.   :50   65     :1453  
+                                                         (Other):3674  
+     event                civ             region    
+ Min.   :0.00000   unmarried: 1565   town    :2485  
+ 1st Qu.:0.00000   married  :11380   industry:5344  
+ Median :0.00000   widow    : 4489   rural   :9605  
+ Mean   :0.02587                                    
+ 3rd Qu.:0.00000                                    
+ Max.   :1.00000                                    
+                                                    </code></pre>
+</div>
+</div>
+</section>
+<section id="binomial-regression-with-glm" class="level3" data-number="4.2">
+<h3 data-number="4.2" class="anchored" data-anchor-id="binomial-regression-with-glm"><span class="header-section-number">4.2</span> Binomial regression with glm</h3>
+<p>logistic regression</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>fit.glm <span class="ot">&lt;-</span> <span class="fu">glm</span>(event <span class="sc">~</span> sex <span class="sc">+</span> civ <span class="sc">+</span> region <span class="sc">+</span> time </span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>               , <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link=</span>cloglog)</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>               , <span class="at">data =</span> om3)</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit.glm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = event ~ sex + civ + region + time, family = binomial(link = cloglog), 
+    data = om3)
+
+Coefficients:
+               Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)    -3.42133    0.21167 -16.164  &lt; 2e-16 ***
+sexfemale      -0.36332    0.09927  -3.660 0.000252 ***
+civmarried     -0.33683    0.15601  -2.159 0.030847 *  
+civwidow       -0.19008    0.16810  -1.131 0.258175    
+regionindustry  0.10784    0.14443   0.747 0.455264    
+regionrural    -0.22423    0.14034  -1.598 0.110080    
+time61          0.04895    0.18505   0.265 0.791366    
+time62          0.46005    0.17400   2.644 0.008195 ** 
+time63          0.05586    0.20200   0.277 0.782134    
+time64          0.46323    0.18883   2.453 0.014162 *  
+time65          0.31749    0.20850   1.523 0.127816    
+time66          0.45582    0.21225   2.148 0.031751 *  
+time67          0.91511    0.19551   4.681 2.86e-06 ***
+time68          0.68549    0.22575   3.036 0.002394 ** 
+time69          0.60539    0.24904   2.431 0.015064 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 4186.8  on 17433  degrees of freedom
+Residual deviance: 4125.2  on 17419  degrees of freedom
+AIC: 4155.2
+
+Number of Fisher Scoring iterations: 7</code></pre>
+</div>
+</div>
+</section>
+<section id="survival-analysis-with-coxreg" class="level3" data-number="4.3">
+<h3 data-number="4.3" class="anchored" data-anchor-id="survival-analysis-with-coxreg"><span class="header-section-number">4.3</span> Survival analysis with <code>coxreg</code></h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>om3<span class="sc">$</span>exit <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(om3<span class="sc">$</span>time))</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>om3<span class="sc">$</span>enter <span class="ot">&lt;-</span> om3<span class="sc">$</span>exit <span class="sc">-</span> <span class="fl">0.1</span></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>cap <span class="ot">=</span> <span class="st">"Old age mortality, discrete time analysis"</span></span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>fit.ML <span class="ot">&lt;-</span> <span class="fu">coxreg</span>(<span class="fu">Surv</span>(enter, exit, event) <span class="sc">~</span> sex <span class="sc">+</span> civ <span class="sc">+</span> region</span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>                 , <span class="at">method =</span> <span class="st">"ml"</span>, <span class="at">data =</span> om3, <span class="at">coxph =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit.ML)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Covariate             Mean       Coef     Rel.Risk   S.E.    LR p
+sex                                                          0.000 
+            male      0.404     0         1 (reference)
+          female      0.596    -0.363     0.695     0.099
+civ                                                          0.083 
+       unmarried      0.090     0         1 (reference)
+         married      0.653    -0.337     0.714     0.156
+           widow      0.257    -0.190     0.827     0.168
+region                                                       0.005 
+            town      0.143     0         1 (reference)
+        industry      0.307     0.108     1.114     0.144
+           rural      0.551    -0.224     0.799     0.140
+
+Events                    451 
+Total time at risk        1743.4 
+Max. log. likelihood      -2062.6 
+LR test statistic         27.23 
+Degrees of freedom        5 
+Overall p-value           5.14285e-05</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>fit2.glm <span class="ot">&lt;-</span> <span class="fu">glm</span>(event <span class="sc">~</span> (sex <span class="sc">+</span> civ <span class="sc">+</span> region) <span class="sc">*</span> time</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>                , <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link=</span>cloglog)</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>                , <span class="at">data =</span> om3)</span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a><span class="fu">drop1</span>(fit2.glm, <span class="at">test =</span> <span class="st">"Chisq"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Single term deletions
+
+Model:
+event ~ (sex + civ + region) * time
+            Df Deviance    AIC    LRT Pr(&gt;Chi)
+&lt;none&gt;           4077.1 4197.1                
+sex:time     9   4088.2 4190.2 11.116   0.2679
+civ:time    18   4099.5 4183.5 22.425   0.2137
+region:time 18   4093.7 4177.7 16.600   0.5508</code></pre>
+</div>
+</div>
+</section>
 </section>
 
 </main>
