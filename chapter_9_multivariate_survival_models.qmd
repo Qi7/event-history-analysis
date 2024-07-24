@@ -1,0 +1,109 @@
+--- 
+title: "Multivariate Survival Models"
+output: 
+    html:
+        number-secitions: true
+---
+
+Vaupel et al. (1979)
+
+Frailty Models
+
+## An Introductory Example
+
+We have 2 groups of people
+
+
+$$
+\begin{equation}
+\left .
+\begin{array}{l}
+h_1(t) = \lambda_1 \\
+h_2(t) = \lambda_2
+\end{array}
+\right.
+\quad
+\begin{array}{c}
+t > 0
+\end{array}
+\end{equation}
+$$
+
+and corresponding Survival Functions
+
+$$
+\begin{equation}
+\left .
+\begin{array}{l}
+S_1(t) = e^{-\lambda_1 t} \\
+S_2(t) = e^{-\lambda_2 t}
+\end{array}
+\right.
+\quad
+\begin{array}{c}
+t > 0
+\end{array}
+\end{equation}
+$$
+
+## Frailty Models
+
+### The simple frailty model
+
+$$ h(t;x, Z) = h_0(t)Ze^{\beta x}, \quad t \gt 0 $$
+
+### The shared frailty model
+
+$$ h_i(t;x) = h_{i0}(t)e^{\beta x}, \quad i = 1, \ldots , s; t \gt 0 $$
+
+`coxme`
+
+```{r}
+library(eha)
+fe <- fert[fert$parity != 0, ]
+library(coxme)
+head(fe)
+```
+
+```{r}
+fit <- coxme(Surv(next.ivl, event) ~ age + ses + parity + (1|id), data = fe)
+summary(fit)
+```
+
+```{r}
+fit0 <- coxreg(Surv(next.ivl, event) ~ age + ses + parity , data = fe)
+summary(fit0)
+```
+
+```{r}
+fit <- coxme(Surv(enter, exit, event) ~ sex + civ + (1|m.id), data = oldmort)
+summary(fit)
+```
+
+```{r}
+om <- oldmort[!is.na(oldmort$m.id), ]
+fit0 <- coxreg(Surv(enter, exit, event) ~ sex + civ, data = om)
+summary(fit0)
+```
+
+### Parametric frailty models
+
+```{r pchmodel}
+fit0 <- pchreg(Surv(next.ivl, event) ~ parity + ses, cuts = 0:13, data = fe)
+summary(fit0)
+```
+
+```{r glmmML}
+library(glmmML)
+fe13 <- survSplit(fe, end = 'next.ivl', event = 'event', cut = 1:13, 
+    episode = 'years', start = 'start')
+fe13$years <- as.factor(fe13$years)
+fe13$offs <- log(fe13$next.ivl - fe13$start)
+
+fit1 <- glmmML(event ~ parity + ses + years + offset(offs)
+    , cluster = id, family = poisson, method = 'ghq', data = fe13, n.points = 9)
+
+out <- with(fit1, cbind(coefficients, coef.sd))
+colnames(out) <- c('coef','sd')
+round(out[1:5, ], 3)
+```
