@@ -107,3 +107,7 @@ out <- with(fit1, cbind(coefficients, coef.sd))
 colnames(out) <- c('coef','sd')
 round(out[1:5, ], 3)
 ```
+
+## Stratification
+
+

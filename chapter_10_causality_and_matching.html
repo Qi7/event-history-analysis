@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Multivariate Survival Models</title>
+<title>Chapter 10 Causality and Matching</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -57,16 +57,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </style>
 
 
-<script src="chapter_9_multivariate_survival_models_files/libs/clipboard/clipboard.min.js"></script>
-<script src="chapter_9_multivariate_survival_models_files/libs/quarto-html/quarto.js"></script>
-<script src="chapter_9_multivariate_survival_models_files/libs/quarto-html/popper.min.js"></script>
-<script src="chapter_9_multivariate_survival_models_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="chapter_9_multivariate_survival_models_files/libs/quarto-html/anchor.min.js"></script>
-<link href="chapter_9_multivariate_survival_models_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="chapter_9_multivariate_survival_models_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="chapter_9_multivariate_survival_models_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="chapter_9_multivariate_survival_models_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="chapter_9_multivariate_survival_models_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="chapter_10_causality_and_matching_files/libs/clipboard/clipboard.min.js"></script>
+<script src="chapter_10_causality_and_matching_files/libs/quarto-html/quarto.js"></script>
+<script src="chapter_10_causality_and_matching_files/libs/quarto-html/popper.min.js"></script>
+<script src="chapter_10_causality_and_matching_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="chapter_10_causality_and_matching_files/libs/quarto-html/anchor.min.js"></script>
+<link href="chapter_10_causality_and_matching_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="chapter_10_causality_and_matching_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="chapter_10_causality_and_matching_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="chapter_10_causality_and_matching_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="chapter_10_causality_and_matching_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -108,7 +108,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Multivariate Survival Models</h1>
+<h1 class="title">Chapter 10 Causality and Matching</h1>
 </div>
 
 
@@ -125,225 +125,91 @@ window.Quarto = {
 </header>
 
 
-<p>Vaupel et al.&nbsp;(1979)</p>
-<p>Frailty Models</p>
-<section id="an-introductory-example" class="level2">
-<h2 class="anchored" data-anchor-id="an-introductory-example">An Introductory Example</h2>
-<p>We have 2 groups of people</p>
-<p><span class="math display">\[
-\begin{equation}
-\left .
-\begin{array}{l}
-h_1(t) = \lambda_1 \\
-h_2(t) = \lambda_2
-\end{array}
-\right.
-\quad
-\begin{array}{c}
-t &gt; 0
-\end{array}
-\end{equation}
-\]</span></p>
-<p>and corresponding Survival Functions</p>
-<p><span class="math display">\[
-\begin{equation}
-\left .
-\begin{array}{l}
-S_1(t) = e^{-\lambda_1 t} \\
-S_2(t) = e^{-\lambda_2 t}
-\end{array}
-\right.
-\quad
-\begin{array}{c}
-t &gt; 0
-\end{array}
-\end{equation}
-\]</span></p>
+<section id="philosophical-aspects-on-causality" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="philosophical-aspects-on-causality"><span class="header-section-number">1</span> Philosophical Aspects on Causality</h2>
 </section>
-<section id="frailty-models" class="level2">
-<h2 class="anchored" data-anchor-id="frailty-models">Frailty Models</h2>
-<section id="the-simple-frailty-model" class="level3">
-<h3 class="anchored" data-anchor-id="the-simple-frailty-model">The simple frailty model</h3>
-<p><span class="math display">\[ h(t;x, Z) = h_0(t)Ze^{\beta x}, \quad t \gt 0 \]</span></p>
+<section id="causal-inference" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="causal-inference"><span class="header-section-number">2</span> Causal Inference</h2>
+<ol type="1">
+<li>graphical models</li>
+<li>predictive causality</li>
+<li>counterfactual causality</li>
+</ol>
+<p>Dynamic Path Analysis</p>
+<section id="graphic-models" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="graphic-models"><span class="header-section-number">2.1</span> Graphic Models</h3>
+<p>Wright (1921)</p>
 </section>
-<section id="the-shared-frailty-model" class="level3">
-<h3 class="anchored" data-anchor-id="the-shared-frailty-model">The shared frailty model</h3>
-<p><span class="math display">\[ h_i(t;x) = h_{i0}(t)e^{\beta x}, \quad i = 1, \ldots , s; t \gt 0 \]</span></p>
-<p><code>coxme</code></p>
+<section id="predictive-causality" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="predictive-causality"><span class="header-section-number">2.2</span> Predictive Causality</h3>
+<p>stochastic processes</p>
+<p><strong>Granger Test</strong></p>
+<p><strong>Local Dependence</strong></p>
+</section>
+<section id="counterfactuals" class="level3" data-number="2.3">
+<h3 data-number="2.3" class="anchored" data-anchor-id="counterfactuals"><span class="header-section-number">2.3</span> Counterfactuals</h3>
+<ul>
+<li>Rubin school: matching</li>
+<li>Robins school: inverse probability weighting</li>
+</ul>
+</section>
+</section>
+<section id="aalens-additive-hazards-model" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="aalens-additive-hazards-model"><span class="header-section-number">3</span> Aalen’s Additive Hazards Model</h2>
+<p>for proportional hazards model</p>
+<p><span class="math display">\[h(t|x) = h_0(t)r(\beta, x_i(t)), \quad t \gt 0 \]</span></p>
+<p>additive hazards model</p>
+<p><span class="math display">\[h(t|x_i) = h_0(t)+\beta_1(t)x_{i1}(t)+\ldots+\beta_p(t)x_{ip}(t), \quad t \gt 0\]</span></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(eha)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>fe <span class="ot">&lt;-</span> fert[fert<span class="sc">$</span>parity <span class="sc">!=</span> <span class="dv">0</span>, ]</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(coxme)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Loading required package: survival</code></pre>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survival)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Loading required package: bdsmatrix</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'bdsmatrix'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following object is masked from 'package:base':
-
-    backsolve</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fe)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">=</span> <span class="fu">aareg</span>(<span class="at">formula =</span> <span class="fu">Surv</span>(enter<span class="dv">-60</span>, exit<span class="dv">-60</span>, event) <span class="sc">~</span> sex, <span class="at">data =</span> oldmort)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  id parity age year next.ivl event prev.ivl     ses parish
-2  1      1  25 1826   22.348     0    0.411  farmer    SKL
-4  2      1  19 1821    1.837     1    0.304 unknown    SKL
-5  2      2  21 1823    2.546     1    1.837 unknown    SKL
-6  2      3  23 1826    2.541     1    2.546 unknown    SKL
-7  2      4  26 1828    2.431     1    2.541 unknown    SKL
-8  2      5  28 1831    2.472     1    2.431 unknown    SKL</code></pre>
+<pre><code>            slope      coef se(coef)     z         p
+Intercept  0.1400  0.000753 2.58e-05 29.20 9.82e-188
+sexfemale -0.0281 -0.000136 3.26e-05 -4.16  3.12e-05
+
+Chisq=17.34 on 1 df, p=3.12e-05; test weights=aalen</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">coxme</span>(<span class="fu">Surv</span>(next.ivl, event) <span class="sc">~</span> age <span class="sc">+</span> ses <span class="sc">+</span> parity <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>id), <span class="at">data =</span> fe)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Mixed effects coxme model
- Formula: Surv(next.ivl, event) ~ age + ses + parity + (1 | id) 
-    Data: fe 
-
-  events, n = 8458, 10312
-
-Random effects:
-  group  variable        sd variance
-1    id Intercept 0.7518637 0.565299
-                  Chisq   df p  AIC   BIC
-Integrated loglik  2806    6 0 2794  2752
- Penalized loglik  6193 1212 0 3770 -4764
-
-Fixed effects:
-                coef exp(coef)  se(coef)      z        p
-age        -0.079603  0.923483  0.004166 -19.11  &lt; 2e-16
-sesunknown -0.077854  0.925099  0.060675  -1.28 0.199442
-sesupper    0.100905  1.106171  0.157987   0.64 0.523023
-seslower   -0.170296  0.843415  0.049673  -3.43 0.000607
-parity     -0.114102  0.892167  0.010137 -11.26  &lt; 2e-16</code></pre>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>oldpar <span class="ot">&lt;-</span> <span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="chapter_10_causality_and_matching_files/figure-html/plot-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>fit0 <span class="ot">&lt;-</span> <span class="fu">coxreg</span>(<span class="fu">Surv</span>(next.ivl, event) <span class="sc">~</span> age <span class="sc">+</span> ses <span class="sc">+</span> parity , <span class="at">data =</span> fe)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit0)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Covariate             Mean       Coef     Rel.Risk   S.E.    LR p
-age                  33.088    -0.080     0.923     0.003    0.000 
-ses                                                          0.000 
-          farmer      0.491     0         1 (reference)
-         unknown      0.186    -0.085     0.919     0.030
-           upper      0.018     0.147     1.158     0.083
-           lower      0.305    -0.083     0.920     0.026
-parity                4.242     0.013     1.013     0.007    0.068 
-
-Events                    8458 
-Total time at risk         29806 
-Max. log. likelihood      -70391 
-LR test statistic         1834.39 
-Degrees of freedom        5 
-Overall p-value           0</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">coxme</span>(<span class="fu">Surv</span>(enter, exit, event) <span class="sc">~</span> sex <span class="sc">+</span> civ <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>m.id), <span class="at">data =</span> oldmort)</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Mixed effects coxme model
- Formula: Surv(enter, exit, event) ~ sex + civ + (1 | m.id) 
-    Data: oldmort 
-
-  events, n = 888, 3340 (3155 observations deleted due to missingness)
-
-Random effects:
-  group  variable       sd   variance
-1  m.id Intercept 0.237192 0.05626006
-                   Chisq    df         p   AIC     BIC
-Integrated loglik  18.46  4.00 1.001e-03 10.46   -8.69
- Penalized loglik 112.82 49.23 6.715e-07 14.36 -221.39
-
-Fixed effects:
-               coef exp(coef) se(coef)     z        p
-sexfemale  -0.20263   0.81658  0.07191 -2.82 0.004832
-civmarried -0.46536   0.62791  0.12145 -3.83 0.000127
-civwidow   -0.33050   0.71856  0.11964 -2.76 0.005737</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>om <span class="ot">&lt;-</span> oldmort[<span class="sc">!</span><span class="fu">is.na</span>(oldmort<span class="sc">$</span>m.id), ]</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>fit0 <span class="ot">&lt;-</span> <span class="fu">coxreg</span>(<span class="fu">Surv</span>(enter, exit, event) <span class="sc">~</span> sex <span class="sc">+</span> civ, <span class="at">data =</span> om)</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit0)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Covariate             Mean       Coef     Rel.Risk   S.E.    LR p
-sex                                                          0.006 
-            male      0.418     0         1 (reference)
-          female      0.582    -0.196     0.822     0.070
-civ                                                          0.001 
-       unmarried      0.076     0         1 (reference)
-         married      0.555    -0.443     0.642     0.118
-           widow      0.369    -0.310     0.733     0.116
-
-Events                    888 
-Total time at risk         19855 
-Max. log. likelihood      -5693.8 
-LR test statistic         17.71 
-Degrees of freedom        3 
-Overall p-value           0.000504597</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(oldpar)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="parametric-frailty-models" class="level3">
-<h3 class="anchored" data-anchor-id="parametric-frailty-models">Parametric frailty models</h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>fit0 <span class="ot">&lt;-</span> <span class="fu">pchreg</span>(<span class="fu">Surv</span>(next.ivl, event) <span class="sc">~</span> parity <span class="sc">+</span> ses, <span class="at">cuts =</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">13</span>, <span class="at">data =</span> fe)</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit0)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Covariate             Mean       Coef     Rel.Risk   S.E.    LR p
-parity                4.242    -0.131     0.878     0.005   0.0000 
-ses                                                         0.0000 
-          farmer      0.491     0         1 (reference)
-         unknown      0.186     0.095     1.100     0.029
-           upper      0.018     0.087     1.090     0.083
-           lower      0.305    -0.151     0.860     0.026
-
-Events                    8458 
-Total time at risk         29806 
-Max. log. likelihood      -14068 
-LR test statistic         839.09 
-Degrees of freedom        4 
-Overall p-value           0
-
-Restricted mean survival:  2.299217 in (0, 13] </code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmmML)</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>fe13 <span class="ot">&lt;-</span> <span class="fu">survSplit</span>(fe, <span class="at">end =</span> <span class="st">'next.ivl'</span>, <span class="at">event =</span> <span class="st">'event'</span>, <span class="at">cut =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">13</span>, </span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">episode =</span> <span class="st">'years'</span>, <span class="at">start =</span> <span class="st">'start'</span>)</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>fe13<span class="sc">$</span>years <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(fe13<span class="sc">$</span>years)</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>fe13<span class="sc">$</span>offs <span class="ot">&lt;-</span> <span class="fu">log</span>(fe13<span class="sc">$</span>next.ivl <span class="sc">-</span> fe13<span class="sc">$</span>start)</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>fit1 <span class="ot">&lt;-</span> <span class="fu">glmmML</span>(event <span class="sc">~</span> parity <span class="sc">+</span> ses <span class="sc">+</span> years <span class="sc">+</span> <span class="fu">offset</span>(offs)</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    , <span class="at">cluster =</span> id, <span class="at">family =</span> poisson, <span class="at">method =</span> <span class="st">'ghq'</span>, <span class="at">data =</span> fe13, <span class="at">n.points =</span> <span class="dv">9</span>)</span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>out <span class="ot">&lt;-</span> <span class="fu">with</span>(fit1, <span class="fu">cbind</span>(coefficients, coef.sd))</span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(out) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">'coef'</span>,<span class="st">'sd'</span>)</span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(out[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, ], <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>              coef    sd
-(Intercept) -3.729 0.090
-parity      -0.274 0.006
-sesunknown   0.086 0.065
-sesupper    -0.033 0.171
-seslower    -0.262 0.054</code></pre>
-</div>
-</div>
+<section id="dynamic-path-analysis" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="dynamic-path-analysis"><span class="header-section-number">4</span> Dynamic Path Analysis</h2>
+</section>
+<section id="matching" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="matching"><span class="header-section-number">5</span> Matching</h2>
+<section id="paired-data" class="level3" data-number="5.1">
+<h3 data-number="5.1" class="anchored" data-anchor-id="paired-data"><span class="header-section-number">5.1</span> Paired Data</h3>
+</section>
+<section id="more-than-one-control" class="level3" data-number="5.2">
+<h3 data-number="5.2" class="anchored" data-anchor-id="more-than-one-control"><span class="header-section-number">5.2</span> More than one control</h3>
 </section>
 </section>
-<section id="stratification" class="level2">
-<h2 class="anchored" data-anchor-id="stratification">Stratification</h2>
+<section id="conclusion" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="conclusion"><span class="header-section-number">6</span> Conclusion</h2>
+<ul>
+<li>Causal thinking is important</li>
+<li>Counterfactual reasoning and marginal models yield little insight into “how it works”</li>
+<li>Creation of pseudo-populations through weighting and matching may limit the understanding of how things really work
+<ul>
+<li>Analyze the process as it presents itself, so that it is easier to generalize findings</li>
+</ul></li>
+</ul>
 </section>
 
 </main>

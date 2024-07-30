@@ -1,0 +1,75 @@
+---
+title: "Chapter 10 Causality and Matching"
+format: 
+    html:
+        number-sections: true
+---
+
+## Philosophical Aspects on Causality
+
+## Causal Inference
+
+1. graphical models
+2. predictive causality
+3. counterfactual causality
+
+Dynamic Path Analysis
+
+### Graphic Models
+
+Wright (1921)
+
+### Predictive Causality
+
+stochastic processes
+
+__Granger Test__
+
+__Local Dependence__
+
+### Counterfactuals
+
+- Rubin school: matching
+- Robins school: inverse probability weighting
+
+## Aalen's Additive Hazards Model
+
+for proportional hazards model
+
+$$h(t|x) = h_0(t)r(\beta, x_i(t)), \quad t \gt 0 $$
+
+additive hazards model
+
+$$h(t|x_i) = h_0(t)+\beta_1(t)x_{i1}(t)+\ldots+\beta_p(t)x_{ip}(t), \quad t \gt 0$$
+
+```{r}
+library(eha)
+library(survival)
+```
+
+```{r aareg}
+fit = aareg(formula = Surv(enter-60, exit-60, event) ~ sex, data = oldmort)
+summary(fit)
+```
+
+```{r plot}
+oldpar <- par(mfrow = c(1, 2))
+plot(fit)
+par(oldpar)
+```
+
+## Dynamic Path Analysis
+
+## Matching
+
+### Paired Data
+
+### More than one control
+
+## Conclusion
+
+- Causal thinking is important
+- Counterfactual reasoning and marginal models yield little insight into "how it works"
+- Creation of pseudo-populations through weighting and matching may limit the understanding of how things really work
+    - Analyze the process as it presents itself, so that it is easier to generalize findings
+
