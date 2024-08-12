@@ -1,0 +1,41 @@
+---
+title: "Chapter 11 Competing Risk Models"
+format: 
+    html:
+        number-sections: true
+---
+
+## Some Mathematics
+
+cause-specific cumulative hazard functions are
+$$
+\Gamma_k(t) = \int_0^t\alpha_k(s)ds, \quad t>0, \quad k=1,2,3
+$$
+
+total mortality is 
+$$
+\lambda(t) = \sum_{k=1}^3\alpha_k(t) \quad t>0
+$$
+
+$$
+\Lambda(t) = \sum_{k=1}^3\Gamma_k(t) \quad t>0
+$$
+
+total survival
+$$
+S(t) = \exp\{-\Lambda(t)\} \quad t>0
+$$
+
+## Estimation
+
+## Meaningful Probabilities
+
+## Regression
+
+$$
+P_k(t) = 1 - \exp\{-\Gamma_k(t)\exp(X\beta^{(k)})\}, \quad t>0, \quad k=1,2,3
+$$
+
+```{r}
+library(survival)
+library(cmprsk)
